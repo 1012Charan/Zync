@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zync
+
+A straightforward way to share notes, links, and code. No sign-up, no clutter. Just type, share, and move on.
+
+## 🌐 Live Demo
+
+[Demo Link](https://zync.vercel.app) <!-- Replace with your actual URL if different -->
+
+## Features
+
+- Share notes, links, or code with a single click
+- Clean and modern UI (Tailwind CSS + Framer Motion)
+- Unique URL for every share
+- Optional expiry times (10 mins to 48 hours)
+- Anonymous replies supported
+- Responsive and mobile-friendly
+- Dark mode support
+
+## Tech Stack
+
+- **Frontend:** React + Next.js 15 (App Router)
+- **Styling:** Tailwind CSS, Framer Motion
+- **Backend:** Node.js, MongoDB
+- **Hosting:** Vercel
 
 ## Getting Started
 
-First, run the development server:
+To run this project locally:
 
 ```bash
+git clone https://github.com/1012Charan/ZYNC.git
+cd ZYNC
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+zync-nextjs/
+├── src/
+│   ├── app/         # Main app pages & API routes
+│   ├── components/  # Reusable UI components
+│   └── lib/         # Utilities (e.g. MongoDB connection)
+├── public/          # Static assets (SVGs, icons, etc.)
+├── styles/          # Global and extra styles
+├── pages/           # (Legacy Next.js pages, if any)
+├── ...config files
+```
 
-## Learn More
+## Roadmap / To-Do
 
-To learn more about Next.js, take a look at the following resources:
+- [x] Note / link / code support
+- [x] Custom expiry logic
+- [x] Anonymous replies
+- [x] Dark mode
+- [ ] File sharing (in progress)
+- [ ] Real-time replies
+- [ ] AI suggestions (future)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Why Zync?
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Built to make sharing quick and easy, especially for temporary or one-off content. Useful for students, teams, or anyone who wants a simple way to share something without extra steps.
 
-## Deploy on Vercel
+## Contact
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Created by [Charan Vengala](https://github.com/1012Charan)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+© 2025 Charan Vengala
