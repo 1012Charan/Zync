@@ -5,8 +5,22 @@ function generateId(length = 8) {
 }
 
 export async function POST(req) {
+  let rawBody = null;
+  let parsedBody = null;
   try {
-    const { content, replyTo, name, expiry } = await req.json();
+    rawBody = await req.text();
+    console.log("[DEBUG] Raw request body:", rawBody);
+    try {
+      parsedBody = JSON.parse(rawBody);
+    } catch (err) {
+      console.error("[DEBUG] JSON parse error:", err);
+      return new Response(JSON.stringify({ error: "Malformed JSON", details: String(err) }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    console.log("[DEBUG] Parsed body:", parsedBody);
+    const { content, replyTo, name, expiry } = parsedBody;
     if (!content || typeof content !== "string" || !content.trim()) {
       return new Response(JSON.stringify({ error: "Note content required" }), {
         status: 400,
@@ -30,8 +44,9 @@ export async function POST(req) {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch {
-    return new Response(JSON.stringify({ error: "Invalid request" }), {
+  } catch (err) {
+    console.error("[DEBUG] Unhandled error in POST /api/zync/note:", err, { rawBody, parsedBody });
+    return new Response(JSON.stringify({ error: "Invalid request", details: String(err) }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
