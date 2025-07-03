@@ -31,7 +31,7 @@ export async function POST(req) {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (e) {
+  } catch {
     return new Response(JSON.stringify({ error: "Server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -71,7 +71,7 @@ export async function GET(req) {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (e) {
+  } catch {
     return new Response(JSON.stringify({ error: "Server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

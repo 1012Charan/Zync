@@ -174,29 +174,6 @@ export default function DropPage() {
     }
   }
 
-  async function handleFileSubmit(e) {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setCopied(false);
-    try {
-      const res = await fetch("/api/zync/file", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileName, fileUrl, fileSize: Number(fileSize), name, expiry }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to create drop");
-      setDropId(data.id);
-      setSuccess(true);
-      setName("");
-    } catch (err) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
     <main className="min-h-screen bg-[#131118] flex flex-col items-center px-2 py-6 sm:py-8" style={{ fontFamily: 'Inter, Space Grotesk, Noto Sans, sans-serif', paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}>
       <motion.h1
@@ -226,7 +203,6 @@ export default function DropPage() {
                 : "bg-white/5 text-white/60 hover:bg-white/10 border border-transparent"}
             `}
             onClick={() => handleTabChange(tab.key)}
-            aria-selected={activeTab === tab.key}
             aria-label={tab.label}
           >
             <span className="text-xl">{tab.icon}</span>

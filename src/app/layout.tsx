@@ -10,6 +10,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* NOTE: For production, move custom font links to a custom _document.js for best performance. See Next.js docs. */}
         <link rel="preconnect" href="https://fonts.gstatic.com/" crossOrigin="" />
         <link
           rel="stylesheet"

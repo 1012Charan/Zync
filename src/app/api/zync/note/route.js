@@ -1,5 +1,4 @@
 import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
 
 function generateId(length = 8) {
   return Math.random().toString(36).substr(2, length);
@@ -31,7 +30,7 @@ export async function POST(req) {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (e) {
+  } catch {
     return new Response(JSON.stringify({ error: "Invalid request" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
@@ -67,7 +66,7 @@ export async function GET(req) {
   // Fetch replies
   const replies = await db.collection("notes").find({ replyTo: id }).sort({ createdAt: 1 }).toArray();
   console.log('GET /api/zync/note', { id, replies });
-  const { _id, ...rest } = note;
+  const { ...rest } = note;
   return new Response(JSON.stringify({ ...rest, replies }), {
     status: 200,
     headers: { "Content-Type": "application/json" },

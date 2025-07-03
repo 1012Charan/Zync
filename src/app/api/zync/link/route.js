@@ -49,7 +49,7 @@ export async function POST(req) {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (e) {
+  } catch {
     return new Response(JSON.stringify({ error: "Invalid request" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
@@ -84,7 +84,7 @@ export async function GET(req) {
   }
   // Fetch replies
   const replies = await db.collection("links").find({ replyTo: id }).sort({ createdAt: 1 }).toArray();
-  const { _id, ...rest } = link;
+  const { ...rest } = link;
   return new Response(JSON.stringify({ ...rest, replies }), {
     status: 200,
     headers: { "Content-Type": "application/json" },

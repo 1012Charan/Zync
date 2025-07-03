@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 
 export default function DropIdPage() {
   const { id } = useParams();
-  const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showReply, setShowReply] = useState(false);
