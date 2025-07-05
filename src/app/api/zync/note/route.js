@@ -20,7 +20,7 @@ export async function POST(req) {
       });
     }
     console.log("[DEBUG] Parsed body:", parsedBody);
-    const { content, replyTo, name, expiry } = parsedBody;
+    const { content, replyTo, name, expiry, title } = parsedBody;
     if (!content || typeof content !== "string" || !content.trim()) {
       return new Response(JSON.stringify({ error: "Note content required" }), {
         status: 400,
@@ -39,6 +39,7 @@ export async function POST(req) {
       expiresAt,
       ...(name ? { name: name.trim() } : {}),
       ...(replyTo ? { replyTo } : {}),
+      ...(title ? { title: title.trim() } : {}),
     });
     return new Response(JSON.stringify({ id }), {
       status: 200,

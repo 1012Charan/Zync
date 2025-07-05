@@ -101,7 +101,7 @@ export default function DropPage() {
       const res = await fetch("/api/zync/note", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: noteContent, name, expiry }),
+        body: JSON.stringify({ content: noteContent, name, expiry, title: noteTitle }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to create drop");

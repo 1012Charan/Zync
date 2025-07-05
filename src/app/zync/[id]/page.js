@@ -14,6 +14,7 @@ export default function DropIdPage() {
   const [dropType, setDropType] = useState("");
   const [drop, setDrop] = useState(null);
   const [replyName, setReplyName] = useState("");
+  const [replyTitle, setReplyTitle] = useState("");
 
   // Try fetching from each drop type API, robustly
   const fetchDrop = async () => {
@@ -62,14 +63,21 @@ export default function DropIdPage() {
 
   async function handleReplySubmit(e) {
     e.preventDefault();
+    if (!replyContent.trim()) {
+      setReplyError("Reply content required");
+      return;
+    }
     setReplyLoading(true);
     setReplyError("");
     try {
       let apiUrl = "/api/zync/note";
       let body = { content: replyContent, replyTo: id, name: replyName };
+      if (dropType === "note") {
+        body.title = replyTitle;
+      }
       if (dropType === "link") {
         apiUrl = "/api/zync/link";
-        body = { url: replyContent, replyTo: id, name: replyName };
+        body = { content: replyContent, replyTo: id, name: replyName };
       } else if (dropType === "code") {
         apiUrl = "/api/zync/code";
         body = { code: replyContent, replyTo: id, name: replyName };
@@ -87,6 +95,7 @@ export default function DropIdPage() {
       if (!res.ok) throw new Error(data.error || "Failed to reply");
       setReplyContent("");
       setReplyName("");
+      setReplyTitle("");
       setShowReply(false);
       await fetchDrop();
     } catch (err) {
@@ -111,6 +120,9 @@ export default function DropIdPage() {
       <>
         <div className="text-[#6366f1] text-3xl mb-2" style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}>📝</div>
         <NameLine name={drop.name} />
+        {drop.title && (
+          <div className="font-bold text-lg mb-1 text-white">{drop.title}</div>
+        )}
         <div className="w-full bg-white/10 rounded-lg px-4 py-3 text-white text-base whitespace-pre-wrap break-words min-h-[80px]" style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}>
           {drop.content}
         </div>
@@ -169,9 +181,29 @@ export default function DropIdPage() {
             <div key={reply._id} className="bg-white/10 rounded-xl px-5 py-4 flex flex-col shadow-md border border-white/10">
               <NameLine name={reply.name} />
               <div className="text-white text-base whitespace-pre-wrap break-words mt-1" style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}>
-                {dropType === "note" && reply.content}
+                {dropType === "note" && (
+                  <>
+                    {reply.title && (
+                      <div className="font-bold text-lg mb-1 text-white">{reply.title}</div>
+                    )}
+                    {reply.content}
+                  </>
+                )}
                 {dropType === "link" && (
-                  <a href={reply.url} target="_blank" rel="noopener noreferrer" className="text-blue-300 underline break-all hover:text-orange-300 transition-all" style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}>{reply.url}</a>
+                  <div className="text-white break-words">
+                    {reply.content?.startsWith("http") ? (
+                      <a
+                        href={reply.content}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 underline"
+                      >
+                        {reply.content}
+                      </a>
+                    ) : (
+                      <span>{reply.content}</span>
+                    )}
+                  </div>
                 )}
                 {dropType === "code" && (
                   <pre className="text-sm overflow-x-auto" style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}><code>{reply.code}</code></pre>
@@ -237,10 +269,19 @@ export default function DropIdPage() {
                   className="bg-white/5 rounded-lg px-4 py-3 min-h-[80px] text-white placeholder:text-white/50 border-none outline-none focus:ring-2 focus:ring-[#6366f1]"
                   disabled={replyLoading || !showReply}
                 />
+                {dropType === "note" && (
+                  <input
+                    type="text"
+                    placeholder="Title (optional)"
+                    value={replyTitle}
+                    onChange={e => setReplyTitle(e.target.value)}
+                    className="bg-white/5 rounded-lg px-4 py-3 text-white placeholder:text-white/50 border-none outline-none focus:ring-2 focus:ring-[#6366f1]"
+                    disabled={replyLoading || !showReply}
+                  />
+                )}
                 <textarea
                   value={replyContent}
                   onChange={e => setReplyContent(e.target.value)}
-                  required={showReply}
                   placeholder="Write your reply..."
                   className="bg-white/5 rounded-lg px-4 py-3 min-h-[80px] text-white placeholder:text-white/50 border-none outline-none focus:ring-2 focus:ring-[#6366f1]"
                   disabled={replyLoading || !showReply}
@@ -250,7 +291,7 @@ export default function DropIdPage() {
                   <button
                     type="button"
                     className="px-4 py-2 rounded-lg bg-white/10 text-white font-semibold hover:bg-white/20 transition-all"
-                    onClick={() => { setShowReply(false); setReplyContent(""); setReplyName(""); }}
+                    onClick={() => { setShowReply(false); setReplyContent(""); setReplyName(""); setReplyTitle(""); }}
                     disabled={replyLoading}
                   >
                     Cancel
