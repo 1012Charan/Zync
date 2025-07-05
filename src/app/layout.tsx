@@ -1,5 +1,6 @@
 import './globals.css';
 import type { ReactNode } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
   title: 'Zync',
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="bg-white dark:bg-[#131118] text-[#171717] dark:text-[#ededed] min-h-screen">
         {children}
+        <Analytics />
       </body>
     </html>
   );
