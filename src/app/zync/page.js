@@ -134,6 +134,41 @@ export default function DropPage() {
     }
   }
 
+  function handleShare() {
+    const url = accessKey 
+      ? `${window.location.origin}/zync/${dropId}?key=${accessKey}`
+      : `${window.location.origin}/zync/${dropId}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'Check out this Zync!',
+        text: 'I shared something with Zync - a quick way to share notes, links, and code.',
+        url: url
+      }).catch(() => {
+        // Fallback to copy if share fails
+        handleCopy();
+      });
+    } else {
+      // Fallback to copy for browsers without Web Share API
+      handleCopy();
+    }
+  }
+
+  function handleCreateAnother() {
+    setSuccess(false);
+    setDropId("");
+    setAccessKey("");
+    setCopied(false);
+    setNoteContent("");
+    setNoteTitle("");
+    setLinkUrl("");
+    setCodeContent("");
+    setCodeLang("");
+    setName("");
+    setExpiry(86400);
+    vibrate(20); // Success haptic
+  }
+
   async function handleLinkSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -312,11 +347,27 @@ export default function DropPage() {
                         style={{ minWidth: 0 }}
                       />
                     )}
+                    <div className="flex gap-2 w-full">
+                      <button
+                        onClick={handleCopy}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 sm:px-8 py-4 rounded-lg bg-[#6366f1] text-white font-semibold shadow hover:bg-[#4211d4] transition-all duration-150 ${copied ? "ring-2 ring-green-400" : ""}`}
+                      >
+                        {copied ? "Copied!" : "Copy Link"}
+                      </button>
+                      <button
+                        onClick={handleShare}
+                        className="flex items-center gap-2 px-4 py-4 rounded-lg bg-[#10b981] text-white font-semibold shadow hover:bg-[#059669] transition-all duration-150"
+                        title="Share to social media"
+                      >
+                        <span className="text-lg">📤</span>
+                      </button>
+                    </div>
                     <button
-                      onClick={handleCopy}
-                      className={`flex items-center gap-2 px-4 sm:px-8 py-4 rounded-lg bg-[#6366f1] text-white font-semibold shadow hover:bg-[#4211d4] transition-all duration-150 ${copied ? "ring-2 ring-green-400" : ""}`}
+                      onClick={handleCreateAnother}
+                      className="flex items-center gap-2 px-4 sm:px-8 py-3 rounded-lg bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-all duration-150 border border-white/20"
                     >
-                      {copied ? "Copied!" : "Copy Zync"}
+                      <span className="text-lg">⚡</span>
+                      Create Another
                     </button>
                     <div className="text-white/70 text-sm mt-2 text-center">Revisit this link to see replies.</div>
                   </div>
@@ -405,11 +456,27 @@ export default function DropPage() {
                         style={{ minWidth: 0 }}
                       />
                     )}
+                    <div className="flex gap-2 w-full">
+                      <button
+                        onClick={handleCopy}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 sm:px-8 py-4 rounded-lg bg-[#f59e42] text-white font-semibold shadow hover:bg-[#fbbf24] transition-all duration-150 ${copied ? "ring-2 ring-green-400" : ""}`}
+                      >
+                        {copied ? "Copied!" : "Copy Link"}
+                      </button>
+                      <button
+                        onClick={handleShare}
+                        className="flex items-center gap-2 px-4 py-4 rounded-lg bg-[#10b981] text-white font-semibold shadow hover:bg-[#059669] transition-all duration-150"
+                        title="Share to social media"
+                      >
+                        <span className="text-lg">📤</span>
+                      </button>
+                    </div>
                     <button
-                      onClick={handleCopy}
-                      className={`flex items-center gap-2 px-4 sm:px-8 py-4 rounded-lg bg-[#f59e42] text-white font-semibold shadow hover:bg-[#fbbf24] transition-all duration-150 ${copied ? "ring-2 ring-green-400" : ""}`}
+                      onClick={handleCreateAnother}
+                      className="flex items-center gap-2 px-4 sm:px-8 py-3 rounded-lg bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-all duration-150 border border-white/20"
                     >
-                      {copied ? "Copied!" : "Copy Zync"}
+                      <span className="text-lg">⚡</span>
+                      Create Another
                     </button>
                     <div className="text-white/70 text-sm mt-2 text-center">Revisit this link to see replies.</div>
                   </div>
@@ -504,11 +571,27 @@ export default function DropPage() {
                         style={{ minWidth: 0 }}
                       />
                     )}
+                    <div className="flex gap-2 w-full">
+                      <button
+                        onClick={handleCopy}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 sm:px-8 py-4 rounded-lg bg-[#10b981] text-white font-semibold shadow hover:bg-[#059669] transition-all duration-150 ${copied ? "ring-2 ring-green-400" : ""}`}
+                      >
+                        {copied ? "Copied!" : "Copy Link"}
+                      </button>
+                      <button
+                        onClick={handleShare}
+                        className="flex items-center gap-2 px-4 py-4 rounded-lg bg-[#6366f1] text-white font-semibold shadow hover:bg-[#4211d4] transition-all duration-150"
+                        title="Share to social media"
+                      >
+                        <span className="text-lg">📤</span>
+                      </button>
+                    </div>
                     <button
-                      onClick={handleCopy}
-                      className={`flex items-center gap-2 px-4 sm:px-8 py-4 rounded-lg bg-[#10b981] text-white font-semibold shadow hover:bg-[#059669] transition-all duration-150 ${copied ? "ring-2 ring-green-400" : ""}`}
+                      onClick={handleCreateAnother}
+                      className="flex items-center gap-2 px-4 sm:px-8 py-3 rounded-lg bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-all duration-150 border border-white/20"
                     >
-                      {copied ? "Copied!" : "Copy Zync"}
+                      <span className="text-lg">⚡</span>
+                      Create Another
                     </button>
                     <div className="text-white/70 text-sm mt-2 text-center">Revisit this link to see replies.</div>
                   </div>

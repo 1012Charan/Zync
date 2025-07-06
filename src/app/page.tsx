@@ -103,6 +103,39 @@ export default function Home() {
                 </div>
               </div>
             </section>
+            {/* Usage Stats Section */}
+            <section aria-label="Usage Stats" className="px-4 py-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="bg-gradient-to-r from-[#6366f1]/20 to-[#f472b6]/20 rounded-2xl border border-white/10 p-6 backdrop-blur-md"
+              >
+                <div className="text-center">
+                  <h3 className="text-white text-lg font-bold mb-4">Trusted by Users Worldwide</h3>
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-[#6366f1]">63+</div>
+                      <div className="text-white/70 text-sm">Daily Visitors</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-[#f472b6]">49%</div>
+                      <div className="text-white/70 text-sm">Engagement Rate</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-[#10b981]">100%</div>
+                      <div className="text-white/70 text-sm">Privacy First</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-[#facc15]">0</div>
+                      <div className="text-white/70 text-sm">Signup Required</div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </section>
+            
             {/* How It Works Section */}
             <section aria-label="How It Works">
               <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">How It Works</h2>
