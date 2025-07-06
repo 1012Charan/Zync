@@ -26,6 +26,7 @@ export default function DropPage() {
   const [noteContent, setNoteContent] = useState("");
   const [success, setSuccess] = useState(false);
   const [dropId, setDropId] = useState("");
+  const [accessKey, setAccessKey] = useState("");
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -73,6 +74,7 @@ export default function DropPage() {
     setActiveTab(tab);
     setSuccess(false);
     setDropId("");
+    setAccessKey("");
     setError("");
     setNoteTitle("");
     setNoteContent("");
@@ -106,6 +108,7 @@ export default function DropPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to create drop");
       setDropId(data.id);
+      setAccessKey(data.accessKey || "");
       setSuccess(true);
       setName("");
       vibrate(30); // Success haptic
@@ -118,10 +121,17 @@ export default function DropPage() {
   }
 
   function handleCopy() {
-    navigator.clipboard.writeText(`${window.location.origin}/zync/${dropId}`);
-    setCopied(true);
-    vibrate(15); // Copy haptic
-    setTimeout(() => setCopied(false), 1500);
+    const url = accessKey 
+      ? `${window.location.origin}/zync/${dropId}?key=${accessKey}`
+      : `${window.location.origin}/zync/${dropId}`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url);
+      setCopied(true);
+      vibrate(15); // Copy haptic
+      setTimeout(() => setCopied(false), 1500);
+    } else {
+      window.prompt('Copy this link:', url);
+    }
   }
 
   async function handleLinkSubmit(e) {
@@ -138,6 +148,7 @@ export default function DropPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to create drop");
       setDropId(data.id);
+      setAccessKey(data.accessKey || "");
       setSuccess(true);
       setName("");
       vibrate(30); // Success haptic
@@ -163,6 +174,7 @@ export default function DropPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to create drop");
       setDropId(data.id);
+      setAccessKey(data.accessKey || "");
       setSuccess(true);
       setName("");
       vibrate(30); // Success haptic
@@ -284,7 +296,10 @@ export default function DropPage() {
                   <div className="text-green-400 text-2xl font-bold">Zync Ready!</div>
                   <div className="w-full flex flex-col items-center gap-2">
                     <div className="bg-white/10 rounded-lg px-4 sm:px-8 py-3 sm:py-4 text-white text-center break-all select-all">
-                      {`${typeof window !== "undefined" ? window.location.origin : ""}/zync/${dropId}`}
+                      {accessKey 
+                        ? `${typeof window !== "undefined" ? window.location.origin : ""}/zync/${dropId}?key=${accessKey}`
+                        : `${typeof window !== "undefined" ? window.location.origin : ""}/zync/${dropId}`
+                      }
                     </div>
                     {success && expiry && (
                       <motion.div
@@ -374,7 +389,10 @@ export default function DropPage() {
                   <div className="text-green-400 text-2xl font-bold">Zync Ready!</div>
                   <div className="w-full flex flex-col items-center gap-2">
                     <div className="bg-white/10 rounded-lg px-4 sm:px-8 py-3 sm:py-4 text-white text-center break-all select-all">
-                      {`${typeof window !== "undefined" ? window.location.origin : ""}/zync/${dropId}`}
+                      {accessKey 
+                        ? `${typeof window !== "undefined" ? window.location.origin : ""}/zync/${dropId}?key=${accessKey}`
+                        : `${typeof window !== "undefined" ? window.location.origin : ""}/zync/${dropId}`
+                      }
                     </div>
                     {success && expiry && (
                       <motion.div
@@ -470,7 +488,10 @@ export default function DropPage() {
                   <div className="text-green-400 text-2xl font-bold">Zync Ready!</div>
                   <div className="w-full flex flex-col items-center gap-2">
                     <div className="bg-white/10 rounded-lg px-4 sm:px-8 py-3 sm:py-4 text-white text-center break-all select-all">
-                      {`${typeof window !== "undefined" ? window.location.origin : ""}/zync/${dropId}`}
+                      {accessKey 
+                        ? `${typeof window !== "undefined" ? window.location.origin : ""}/zync/${dropId}?key=${accessKey}`
+                        : `${typeof window !== "undefined" ? window.location.origin : ""}/zync/${dropId}`
+                      }
                     </div>
                     {success && expiry && (
                       <motion.div

@@ -4,6 +4,10 @@ function generateId(length = 8) {
   return Math.random().toString(36).substr(2, length);
 }
 
+function generateAccessKey(length = 6) {
+  return Math.random().toString(36).substr(2, length);
+}
+
 export async function POST(req) {
   let rawBody = null;
   let parsedBody = null;
@@ -28,12 +32,14 @@ export async function POST(req) {
       });
     }
     const id = generateId();
+    const accessKey = generateAccessKey();
     const now = Date.now();
     const expiresAt = expiry ? now + Number(expiry) * 1000 : now + 86400 * 1000;
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
     await db.collection("notes").insertOne({
       _id: id,
+      accessKey,
       content,
       createdAt: now,
       expiresAt,
@@ -41,7 +47,7 @@ export async function POST(req) {
       ...(replyTo ? { replyTo } : {}),
       ...(title ? { title: title.trim() } : {}),
     });
-    return new Response(JSON.stringify({ id }), {
+    return new Response(JSON.stringify({ id, accessKey }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -57,14 +63,19 @@ export async function POST(req) {
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
+  const accessKey = searchParams.get("key");
+  
   if (!id) {
     return new Response(JSON.stringify({ error: "Not found" }), {
       status: 404,
       headers: { "Content-Type": "application/json" },
     });
   }
+  
   const client = await clientPromise;
   const db = client.db(process.env.MONGODB_DB);
+  
+  // Find note by ID
   const note = await db.collection("notes").findOne({ _id: id });
   if (!note) {
     return new Response(JSON.stringify({ error: "Not found" }), {
@@ -72,6 +83,17 @@ export async function GET(req) {
       headers: { "Content-Type": "application/json" },
     });
   }
+  
+  // Check if note has access key protection
+  if (note.accessKey) {
+    if (!accessKey || accessKey !== note.accessKey) {
+      return new Response(JSON.stringify({ error: "Access denied" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  }
+  
   if (note.expiresAt && Date.now() > note.expiresAt) {
     // Optionally: await db.collection("notes").deleteOne({ _id: id });
     return new Response(JSON.stringify({ error: "Zync expired" }), {
@@ -79,10 +101,11 @@ export async function GET(req) {
       headers: { "Content-Type": "application/json" },
     });
   }
+  
   // Fetch replies
   const replies = await db.collection("notes").find({ replyTo: id }).sort({ createdAt: 1 }).toArray();
   console.log('GET /api/zync/note', { id, replies });
-  const { ...rest } = note;
+  const { accessKey: _, ...rest } = note;
   return new Response(JSON.stringify({ ...rest, replies }), {
     status: 200,
     headers: { "Content-Type": "application/json" },

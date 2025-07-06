@@ -22,11 +22,16 @@ export default function DropIdPage() {
     setError("");
     setDropType("");
     setDrop(null);
+    
+    // Get access key from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessKey = urlParams.get('key');
+    
     const apis = [
-      { type: "note", url: `/api/zync/note?id=${id}` },
-      { type: "link", url: `/api/zync/link?id=${id}` },
-      { type: "code", url: `/api/zync/code?id=${id}` },
-      { type: "file", url: `/api/zync/file?id=${id}` },
+      { type: "note", url: `/api/zync/note?id=${id}${accessKey ? `&key=${accessKey}` : ''}` },
+      { type: "link", url: `/api/zync/link?id=${id}${accessKey ? `&key=${accessKey}` : ''}` },
+      { type: "code", url: `/api/zync/code?id=${id}${accessKey ? `&key=${accessKey}` : ''}` },
+      { type: "file", url: `/api/zync/file?id=${id}${accessKey ? `&key=${accessKey}` : ''}` },
     ];
     let found = false;
     for (const api of apis) {
@@ -178,7 +183,7 @@ export default function DropIdPage() {
         </div>
         <div className="flex flex-col gap-5">
           {drop.replies.map((reply) => (
-            <div key={reply._id} className="bg-white/10 rounded-xl px-5 py-4 flex flex-col shadow-md border border-white/10">
+            <div key={reply._id} id={`reply-${reply._id}`} className="bg-white/10 rounded-xl px-5 py-4 flex flex-col shadow-md border border-white/10 relative">
               <NameLine name={reply.name} />
               <div className="text-white text-base whitespace-pre-wrap break-words mt-1" style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}>
                 {dropType === "note" && (
@@ -248,6 +253,25 @@ export default function DropIdPage() {
               {dropType === "code" && <CodeCard drop={drop} />}
               {dropType === "file" && <FileCard drop={drop} />}
             </div>
+            {/* Share Button */}
+            <button
+              onClick={() => {
+                const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+                if (navigator.share) {
+                  navigator.share({
+                    title: 'Check out this Zync!',
+                    url: shareUrl,
+                  });
+                } else {
+                  navigator.clipboard.writeText(shareUrl);
+                  alert('Link copied to clipboard!');
+                }
+              }}
+              className="mt-6 w-full rounded-xl bg-gradient-to-r from-[#6366f1] to-[#f472b6] text-white font-bold py-4 text-lg shadow-md transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#6366f1] hover:from-[#f472b6] hover:to-[#6366f1] disabled:opacity-60 disabled:cursor-not-allowed border border-white/20 backdrop-blur-sm sm:backdrop-blur-md"
+              style={{ fontSize: '1.2rem', marginBottom: 12 }}
+            >
+              Share
+            </button>
             {/* Reply button and always-present textarea */}
             <div className="w-full flex flex-col items-center mt-4">
               <button
