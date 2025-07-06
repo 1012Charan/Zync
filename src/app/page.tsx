@@ -1,7 +1,56 @@
 "use client";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+
+interface RecentZync {
+  id: string;
+  type: string;
+  title?: string;
+  content?: string;
+  url?: string;
+  createdAt: number;
+  accessKey?: string;
+}
 
 export default function Home() {
+  const [recentZyncs, setRecentZyncs] = useState<RecentZync[]>([]);
+
+  useEffect(() => {
+    // Get recent Zyncs from localStorage
+    const stored = localStorage.getItem('recentZyncs');
+    if (stored) {
+      try {
+        const zyncs = JSON.parse(stored);
+        setRecentZyncs(zyncs.slice(0, 3)); // Show last 3
+      } catch (e) {
+        console.error('Error parsing recent Zyncs:', e);
+      }
+    }
+  }, []);
+
+  const getZyncUrl = (zync: RecentZync) => {
+    const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+    return zync.accessKey 
+      ? `${baseUrl}/zync/${zync.id}?key=${zync.accessKey}`
+      : `${baseUrl}/zync/${zync.id}`;
+  };
+
+  const getZyncIcon = (type: string) => {
+    switch (type) {
+      case 'note': return '📝';
+      case 'link': return '🔗';
+      case 'code': return '🧑‍💻';
+      case 'file': return '💾';
+      default: return '📄';
+    }
+  };
+
+  const getZyncPreview = (zync: RecentZync) => {
+    if (zync.title) return zync.title;
+    if (zync.content) return zync.content.slice(0, 50) + (zync.content.length > 50 ? '...' : '');
+    if (zync.url) return zync.url;
+    return 'Zync content';
+  };
   return (
     <main className="relative flex min-h-screen flex-col bg-[#131118] overflow-x-hidden" style={{ fontFamily: 'Space Grotesk, Noto Sans, sans-serif' }}>
       <div className="layout-container flex h-full grow flex-col">
@@ -42,6 +91,57 @@ export default function Home() {
                 </motion.div>
         </div>
             </section>
+            
+            {/* Recent Zyncs Section */}
+            {recentZyncs.length > 0 && (
+              <section aria-label="Recent Zyncs" className="px-4 py-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">Your Recent Zyncs</h2>
+                  <div className="grid gap-3">
+                    {recentZyncs.map((zync, index) => (
+                      <motion.div
+                        key={zync.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: index * 0.1 }}
+                        className="bg-white/5 rounded-xl border border-white/10 p-4 hover:bg-white/10 transition-all duration-200 cursor-pointer group"
+                        onClick={() => window.open(getZyncUrl(zync), '_blank')}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="text-2xl">{getZyncIcon(zync.type)}</div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-white font-medium truncate">{getZyncPreview(zync)}</div>
+                            <div className="text-white/50 text-sm">
+                              {new Date(zync.createdAt).toLocaleDateString()} • {zync.type}
+                            </div>
+                          </div>
+                          <div className="text-white/30 group-hover:text-white/60 transition-colors">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <div className="mt-4 text-center">
+                    <button
+                      onClick={() => window.location.href = '/zync'}
+                      className="text-[#6366f1] hover:text-[#4211d4] font-medium transition-colors"
+                    >
+                      Create New Zync →
+                    </button>
+                  </div>
+                </motion.div>
+              </section>
+            )}
+            
             {/* Features Section */}
             <section aria-label="Features">
               <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Features</h2>

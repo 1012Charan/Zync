@@ -111,6 +111,18 @@ export default function DropPage() {
       setAccessKey(data.accessKey || "");
       setSuccess(true);
       setName("");
+      
+      // Save to recent Zyncs
+      const recentZync = {
+        id: data.id,
+        type: 'note',
+        title: noteTitle,
+        content: noteContent,
+        createdAt: Date.now(),
+        accessKey: data.accessKey
+      };
+      saveToRecentZyncs(recentZync);
+      
       vibrate(30); // Success haptic
     } catch (err) {
       setError(err.message || "Something went wrong");
@@ -154,6 +166,23 @@ export default function DropPage() {
     }
   }
 
+  function saveToRecentZyncs(zync) {
+    try {
+      const stored = localStorage.getItem('recentZyncs');
+      const recentZyncs = stored ? JSON.parse(stored) : [];
+      
+      // Remove if already exists (update existing)
+      const filtered = recentZyncs.filter(z => z.id !== zync.id);
+      
+      // Add to beginning
+      const updated = [zync, ...filtered].slice(0, 10); // Keep last 10
+      
+      localStorage.setItem('recentZyncs', JSON.stringify(updated));
+    } catch (e) {
+      console.error('Error saving to recent Zyncs:', e);
+    }
+  }
+
   function handleCreateAnother() {
     setSuccess(false);
     setDropId("");
@@ -186,6 +215,17 @@ export default function DropPage() {
       setAccessKey(data.accessKey || "");
       setSuccess(true);
       setName("");
+      
+      // Save to recent Zyncs
+      const recentZync = {
+        id: data.id,
+        type: 'link',
+        url: linkUrl,
+        createdAt: Date.now(),
+        accessKey: data.accessKey
+      };
+      saveToRecentZyncs(recentZync);
+      
       vibrate(30); // Success haptic
     } catch (err) {
       setError(err.message || "Something went wrong");
@@ -212,6 +252,18 @@ export default function DropPage() {
       setAccessKey(data.accessKey || "");
       setSuccess(true);
       setName("");
+      
+      // Save to recent Zyncs
+      const recentZync = {
+        id: data.id,
+        type: 'code',
+        content: codeContent,
+        language: codeLang,
+        createdAt: Date.now(),
+        accessKey: data.accessKey
+      };
+      saveToRecentZyncs(recentZync);
+      
       vibrate(30); // Success haptic
     } catch (err) {
       setError(err.message || "Something went wrong");
@@ -356,15 +408,15 @@ export default function DropPage() {
                       </button>
                       <button
                         onClick={handleShare}
-                        className="flex items-center gap-2 px-4 py-4 rounded-lg bg-[#10b981] text-white font-semibold shadow hover:bg-[#059669] transition-all duration-150"
+                        className="flex items-center justify-center gap-2 px-3 py-4 rounded-lg bg-[#10b981] text-white font-semibold shadow hover:bg-[#059669] transition-all duration-150"
                         title="Share to social media"
                       >
-                        <span className="text-lg">📤</span>
+                        <span className="text-base">📤</span>
                       </button>
                     </div>
                     <button
                       onClick={handleCreateAnother}
-                      className="flex items-center gap-2 px-4 sm:px-8 py-3 rounded-lg bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-all duration-150 border border-white/20"
+                      className="w-full flex items-center justify-center gap-2 px-4 sm:px-8 py-4 rounded-lg bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-all duration-150 border border-white/20"
                     >
                       <span className="text-lg">⚡</span>
                       Create Another
@@ -465,15 +517,15 @@ export default function DropPage() {
                       </button>
                       <button
                         onClick={handleShare}
-                        className="flex items-center gap-2 px-4 py-4 rounded-lg bg-[#10b981] text-white font-semibold shadow hover:bg-[#059669] transition-all duration-150"
+                        className="flex items-center justify-center gap-2 px-3 py-4 rounded-lg bg-[#10b981] text-white font-semibold shadow hover:bg-[#059669] transition-all duration-150"
                         title="Share to social media"
                       >
-                        <span className="text-lg">📤</span>
+                        <span className="text-base">📤</span>
                       </button>
                     </div>
                     <button
                       onClick={handleCreateAnother}
-                      className="flex items-center gap-2 px-4 sm:px-8 py-3 rounded-lg bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-all duration-150 border border-white/20"
+                      className="w-full flex items-center justify-center gap-2 px-4 sm:px-8 py-4 rounded-lg bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-all duration-150 border border-white/20"
                     >
                       <span className="text-lg">⚡</span>
                       Create Another
@@ -580,15 +632,15 @@ export default function DropPage() {
                       </button>
                       <button
                         onClick={handleShare}
-                        className="flex items-center gap-2 px-4 py-4 rounded-lg bg-[#6366f1] text-white font-semibold shadow hover:bg-[#4211d4] transition-all duration-150"
+                        className="flex items-center justify-center gap-2 px-3 py-4 rounded-lg bg-[#6366f1] text-white font-semibold shadow hover:bg-[#4211d4] transition-all duration-150"
                         title="Share to social media"
                       >
-                        <span className="text-lg">📤</span>
+                        <span className="text-base">📤</span>
                       </button>
                     </div>
                     <button
                       onClick={handleCreateAnother}
-                      className="flex items-center gap-2 px-4 sm:px-8 py-3 rounded-lg bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-all duration-150 border border-white/20"
+                      className="w-full flex items-center justify-center gap-2 px-4 sm:px-8 py-4 rounded-lg bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-all duration-150 border border-white/20"
                     >
                       <span className="text-lg">⚡</span>
                       Create Another
